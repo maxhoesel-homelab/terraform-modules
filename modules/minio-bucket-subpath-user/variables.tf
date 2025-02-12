@@ -12,3 +12,8 @@ variable "bucket_name" {
   description = "The bucket that the user should get a subpath in."
   type        = string
 }
+
+variable "user_tags" {
+  type    = map(string)
+  default = {}
+}
