@@ -5,6 +5,7 @@ locals {
 resource "random_string" "postfix" {
   length  = 8
   special = false
+  upper   = false
 }
 
 resource "minio_iam_user" "tenant" {
