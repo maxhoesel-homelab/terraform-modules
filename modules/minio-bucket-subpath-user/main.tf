@@ -27,7 +27,7 @@ resource "minio_iam_policy" "access_bucket" {
           "s3:DeleteObject*"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.bucket_name}${local.user_id}/*",
+          "arn:aws:s3:::${var.bucket_name}/${local.user_id}/*",
         ]
       },
       {
