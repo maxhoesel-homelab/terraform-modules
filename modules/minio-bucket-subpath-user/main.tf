@@ -18,6 +18,18 @@ resource "minio_iam_policy" "access_bucket" {
   policy = jsonencode({
     "Version" : "2012-10-17"
     "Statement" : [
+      # Bucket root access is required for HeadBucket to work.
+      # Some tools check the existence of backup access this way
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3::HeadBucket",
+          "s3:ListBucket"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${var.bucket_name}"
+        ]
+      },
       {
         "Effect" : "Allow",
         "Action" : [
