@@ -23,7 +23,7 @@ resource "minio_iam_policy" "access_bucket" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "s3::HeadBucket",
+          "s3:HeadBucket",
           "s3:ListBucket"
         ],
         "Resource" : [
