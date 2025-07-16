@@ -1,9 +1,8 @@
 locals {
   postfix_length = 6
 }
-
 resource "random_string" "postfix" {
-  for_each = var.firewall_host_aliases
+  for_each = var.firewall_aliases
 
   length  = local.postfix_length
   special = false
@@ -11,11 +10,11 @@ resource "random_string" "postfix" {
 }
 
 resource "opnsense_firewall_alias" "main" {
-  for_each = var.firewall_host_aliases
+  for_each = var.firewall_aliases
 
   name    = "${var.firewall_prefix != "" ? "${var.firewall_prefix}_" : ""}${each.key}_${random_string.postfix[each.key].result}"
-  type    = "host"
-  content = each.value.hosts
+  type    = each.value.type
+  content = each.value.content
 }
 
 resource "opnsense_firewall_filter" "main" {
@@ -38,7 +37,7 @@ resource "opnsense_firewall_filter" "main" {
   destination = {
     invert = each.value.destination.invert
     net    = each.value.destination.alias != null ? opnsense_firewall_alias.main[each.value.destination.alias].name : each.value.destination.name
-    port   = each.value.destination.port
+    port   = each.value.destination.port_alias != null ? opnsense_firewall_alias.main[each.value.destination.alias].name : each.value.destination.port
   }
 }
 

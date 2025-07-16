@@ -9,10 +9,11 @@ variable "firewall_filters" {
       alias  = optional(string)
     })
     destination = object({
-      invert = optional(bool, false)
-      name   = optional(string, "any")
-      alias  = optional(string)
-      port   = string
+      invert     = optional(bool, false)
+      name       = optional(string, "any")
+      alias      = optional(string)
+      port       = optional(string, "")
+      port_alias = optional(string)
     })
     action      = optional(string, "pass")
     ip_protocol = optional(string, "inet")
@@ -25,7 +26,11 @@ variable "firewall_filters" {
   }
   validation {
     condition     = alltrue([for name, filter in var.firewall_filters : filter.destination.name != "any" ? filter.destination.alias == null : true])
-    error_message = "destination: name ans alias may not be defined at the same time"
+    error_message = "destination: name and alias may not be defined at the same time"
+  }
+  validation {
+    condition     = alltrue([for name, filter in var.firewall_filters : filter.destination.port != "" ? filter.destination.port_alias == null : true])
+    error_message = "destination: port_name and port_alias may not be defined at the same time"
   }
 }
 
@@ -39,19 +44,20 @@ variable "firewall_prefix" {
   }
 }
 
-variable "firewall_host_aliases" {
+variable "firewall_aliases" {
   default = {}
   type = map(object({
-    hosts       = set(string)
+    content     = set(string)
+    type        = string
     description = optional(string)
   }))
   validation {
     # max length: 32 - 7 from local.postfix_length (6 + _) - (len(prefix) + 1 (_))
-    condition     = alltrue([for name, _ in var.firewall_host_aliases : var.firewall_prefix != "" ? length(name) < 32 - local.postfix_length - 1 - length(var.firewall_prefix) - 1 : length(name) < 32 - local.postfix_length - 1])
+    condition     = alltrue([for name, _ in var.firewall_aliases : var.firewall_prefix != "" ? length(name) < 32 - local.postfix_length - 1 - length(var.firewall_prefix) - 1 : length(name) < 32 - local.postfix_length - 1])
     error_message = "Alias name must be less than ${var.firewall_prefix != "" ? 32 - local.postfix_length - 1 - length(var.firewall_prefix) - 1 : 32 - local.postfix_length - 1} characters (32 including prefix and local.postfix_length)"
   }
   validation {
-    condition     = alltrue([for name, _ in var.firewall_host_aliases : var.firewall_prefix != "" ? can(regex("^[\\w]+$", name)) : can(regex("^[a-z_]+[\\w]*$", name))])
+    condition     = alltrue([for name, _ in var.firewall_aliases : var.firewall_prefix != "" ? can(regex("^[\\w]+$", name)) : can(regex("^[a-z_]+[\\w]*$", name))])
     error_message = "Alias name must be alphanumeric and start with a letter or underscore"
   }
 }
