@@ -40,6 +40,7 @@ variable "firewall_prefix" {
 }
 
 variable "firewall_host_aliases" {
+  default = {}
   type = map(object({
     hosts       = set(string)
     description = optional(string)
