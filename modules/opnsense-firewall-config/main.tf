@@ -37,7 +37,7 @@ resource "opnsense_firewall_filter" "main" {
   destination = {
     invert = each.value.destination.invert
     net    = each.value.destination.alias != null ? opnsense_firewall_alias.main[each.value.destination.alias].name : each.value.destination.name
-    port   = each.value.destination.port_alias != null ? opnsense_firewall_alias.main[each.value.destination.alias].name : each.value.destination.port
+    port   = each.value.destination.port_alias != null ? opnsense_firewall_alias.main[each.value.destination.port_alias].name : each.value.destination.port
   }
 }
 
