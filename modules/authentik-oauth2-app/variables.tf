@@ -1,0 +1,57 @@
+variable "app_name" {
+  description = "Name of the Authentik Application and Provider"
+  validation {
+    condition     = can(regex("[a-z][a-z0-9-]*", var.app_name))
+    error_message = "App name must be lowercase, consist out of letters, digits and dashes and start with a letter"
+  }
+}
+
+variable "client_type" {
+  description = "Whether the client can keep the secret safe (confidential) or not (public)"
+  default     = "confidential"
+}
+
+variable "authorization_flow" {
+  description = "Authorization flow to use for the provider"
+  default     = "default-provider-authorization-explicit-consent"
+}
+variable "invalidation_flow" {
+  description = "Invalidation flow to use for the provider"
+  default     = "default-provider-invalidation-flow"
+}
+
+variable "allowed_redirect_urls" {
+  description = "Redirect URLs for the Oauth2 provider"
+  type = list(object({
+    url           = string
+    matching_mode = optional(string, "strict")
+  }))
+  default = []
+}
+
+variable "custom_scopes" {
+  description = "Custom scope property mappings to add for the provider"
+  type = list(object({
+    name       = string
+    expression = string
+  }))
+}
+
+variable "scopes" {
+  description = "List of property mapping/scopes to enable for the provider. Custom scopes will be added automatically"
+  type        = list(string)
+  default     = ["openid", "profile", "email"]
+}
+
+variable "subject_mode" {
+  description = "How to generate the subject id for the auth token"
+  default     = null
+}
+
+variable "group_bindings" {
+  description = "Groups to bind to the oauth provider"
+  type = list(object({
+    name  = string
+    order = optional(number, 0)
+  }))
+}
