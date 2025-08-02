@@ -55,3 +55,9 @@ variable "group_bindings" {
     order = optional(number, 0)
   }))
 }
+
+variable "output_config_template" {
+  description = "Template that will be rendered to outputs.config to directly generate application configs. Available variables are $app_name (no suffix), $client_id, $client_secret and $configuration_url"
+  type        = string
+  default     = "{\"client_id\": \"$client_id\", \"client_secret\": \"$client_secret\", \"url\": \"$configuration_url\"}"
+}

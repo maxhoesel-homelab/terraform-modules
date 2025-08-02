@@ -22,3 +22,8 @@ output "client_secret" {
 output "configuration_url" {
   value = data.authentik_provider_oauth2_config.app.provider_info_url
 }
+
+output "config" {
+  value     = replace(replace(replace(replace(var.output_config_template, "$app_name", var.app_name), "$client_id", random_string.client_id.result), "$client_secret", authentik_provider_oauth2.app.client_secret), "$configuration_url", data.authentik_provider_oauth2_config.app.provider_info_url)
+  sensitive = true
+}
