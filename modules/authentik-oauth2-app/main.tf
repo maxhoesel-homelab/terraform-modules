@@ -59,7 +59,7 @@ resource "authentik_property_mapping_provider_scope" "custom_scopes" {
 
   name       = "${each.key}-${random_string.suffix.result}"
   expression = each.value.expression
-  scope_name = "${each.key}-${random_string.suffix.result}"
+  scope_name = each.key
 }
 
 resource "authentik_policy_binding" "groups" {
