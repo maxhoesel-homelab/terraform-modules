@@ -35,6 +35,7 @@ variable "custom_scopes" {
     name       = string
     expression = string
   }))
+  default = []
 }
 
 variable "scopes" {
