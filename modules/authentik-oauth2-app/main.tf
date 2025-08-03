@@ -27,8 +27,8 @@ resource "random_string" "suffix" {
 }
 
 resource "authentik_application" "app" {
-  name              = "${var.app_name}-${random_string.suffix.result}"
-  slug              = "${var.app_name}-${random_string.suffix.result}"
+  name              = var.app_name
+  slug              = "${lower(var.app_name)}-${random_string.suffix.result}"
   protocol_provider = authentik_provider_oauth2.app.id
 }
 
@@ -37,7 +37,7 @@ resource "random_string" "client_id" {
   special = false
 }
 resource "authentik_provider_oauth2" "app" {
-  name      = "${var.app_name}-${random_string.suffix.result}"
+  name      = "${lower(var.app_name)}-${random_string.suffix.result}"
   client_id = random_string.client_id.result
 
   allowed_redirect_uris = var.allowed_redirect_urls

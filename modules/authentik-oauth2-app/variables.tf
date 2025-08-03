@@ -1,8 +1,8 @@
 variable "app_name" {
   description = "Name of the Authentik Application and Provider"
   validation {
-    condition     = can(regex("[a-z][a-z0-9-]*", var.app_name))
-    error_message = "App name must be lowercase, consist out of letters, digits and dashes and start with a letter"
+    condition     = can(regex("[A-Za-z][a-Za-z0-9-]*", var.app_name))
+    error_message = "App name must consist out of letters, digits and dashes and start with a letter"
   }
 }
 
