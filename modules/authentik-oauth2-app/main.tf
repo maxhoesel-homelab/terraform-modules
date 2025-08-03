@@ -19,6 +19,11 @@ data "authentik_flow" "authorization_flow" {
 data "authentik_flow" "invalidation_flow" {
   slug = var.invalidation_flow
 }
+data "authentik_certificate_key_pair" "name" {
+  name              = "authentik Self-signed Certificate"
+  fetch_certificate = false
+  fetch_key         = false
+}
 
 resource "random_string" "suffix" {
   length  = 6
@@ -46,6 +51,7 @@ resource "authentik_provider_oauth2" "app" {
   client_type           = var.client_type
   property_mappings     = local.property_mappings
   sub_mode              = var.subject_mode
+  signing_key           = data.authentik_certificate_key_pair.name.id
 }
 
 resource "authentik_property_mapping_provider_scope" "custom_scopes" {
